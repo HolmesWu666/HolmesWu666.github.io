@@ -91,24 +91,51 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="模型的评估与选择"><a href="#模型的评估与选择" class="headerlink" title="模型的评估与选择"></a>模型的评估与选择</h1><p>经验误差：训练集上出现的误差</p>
+        <h1 id="模型的评估与选择">模型的评估与选择</h1>
+<p>经验误差：训练集上出现的误差</p>
 <p>泛化误差：测试集上出现的误差</p>
 <p>过拟合：学习器过于强调样本规律，而使其泛化能力下降</p>
 <p>欠拟合：学习器没能学好样本规律</p>
-<h2 id="测试集和训练集的划分"><a href="#测试集和训练集的划分" class="headerlink" title="测试集和训练集的划分"></a>测试集和训练集的划分</h2><p>留出法：数据集划分为测试集和训练集两个，并使用分层抽样，<strong>即对应每个结果数据集划分比例相同</strong></p>
-<p>交叉验证法：将数据集用分层抽样思想划分为$k$个子集，每次抽取一个子集当测试集，其余子集当训练集，从而得到$k$组测试集和训练集，进行$k$次训练，得到的结果取平均值，又称为$k$折交叉验证</p>
-<p>自助法：数据集中抽样得到测试集，适用于样本量小的数据集，这一方法不会产生测试集和训练集存在无差异而导致的测试无效，理由如下式：<br>$$<br>\lim_{m \to \infty}(1-\frac{1}{m})^m \to \frac{1}{e}&#x3D;36.8%<br>$$<br>TIPS:完整的训练过程是先使用训练集+测试集训练模型，再使用总数据集使用模型，得到结果</p>
-<h2 id="模型评价"><a href="#模型评价" class="headerlink" title="模型评价"></a>模型评价</h2><p>错误率：<br>$$<br>E(f;D)&#x3D;\int_{x \sim D} \prod(f(x) \neq y)p(x)\rm d x<br>$$<br>精度：<br>$$<br>acc(f;D)&#x3D;1-E(f;D)&#x3D;\int_{x \sim D} \prod(f(x) &#x3D; y)p(x)\rm d x<br>$$</p>
-<h3 id="查准率与查全率"><a href="#查准率与查全率" class="headerlink" title="查准率与查全率"></a>查准率与查全率</h3><p>查准率：$P&#x3D;\frac{TP}{TP+FP}$,查全率：$R&#x3D;\frac{TP}{TP+FN}$</p>
+<h2 id="测试集和训练集的划分">测试集和训练集的划分</h2>
+<p>留出法：数据集划分为测试集和训练集两个，并使用分层抽样，<strong>即对应每个结果数据集划分比例相同</strong></p>
+<p>交叉验证法：将数据集用分层抽样思想划分为<span
+class="math inline">\(k\)</span>个子集，每次抽取一个子集当测试集，其余子集当训练集，从而得到<span
+class="math inline">\(k\)</span>组测试集和训练集，进行<span
+class="math inline">\(k\)</span>次训练，得到的结果取平均值，又称为<span
+class="math inline">\(k\)</span>折交叉验证</p>
+<p>自助法：数据集中抽样得到测试集，适用于样本量小的数据集，这一方法不会产生测试集和训练集存在无差异而导致的测试无效，理由如下式：
+<span class="math display">\[
+\lim_{m \to \infty}(1-\frac{1}{m})^m \to \frac{1}{e}=36.8\%
+\]</span>
+TIPS:完整的训练过程是先使用训练集+测试集训练模型，再使用总数据集使用模型，得到结果</p>
+<h2 id="模型评价">模型评价</h2>
+<p>错误率： <span class="math display">\[
+E(f;D)=\int_{x \sim D} \prod(f(x) \neq y)p(x)\rm d x
+\]</span> 精度： <span class="math display">\[
+acc(f;D)=1-E(f;D)=\int_{x \sim D} \prod(f(x) = y)p(x)\rm d x
+\]</span></p>
+<h3 id="查准率与查全率">查准率与查全率</h3>
+<p>查准率：<span
+class="math inline">\(P=\frac{TP}{TP+FP}\)</span>,查全率：<span
+class="math inline">\(R=\frac{TP}{TP+FN}\)</span></p>
 <p>定性判断：给定某一查全率，可以根据混淆矩阵计算对应的查准率，因而可以得到PR曲线，<strong>若一个学习器的PR曲线被另一个学习器的PR曲线包住，则可以说明后者的性能优于前者</strong></p>
 <p>定量判断：</p>
-<ol>
-<li><p>BEP(平衡点): 查准率等于查全率的情况下对应的值的大小，<strong>如果若一个学习器的BEP大，则可以说明性能优</strong></p>
-</li>
-<li><p>F1：查准率和查全率的调和平均数：<br>$$<br>\frac{1}{F_1}&#x3D;\frac{1}{2}(\frac{1}{P}+\frac{1}{R})<br>$$<br>定义$\beta$为查全率对查准率的相对重要程度，$\beta&#x3D;1$的时候为标准F1,$\beta ＞ 1$查全率有更大影响：<br>$$<br>\frac{1}{F_{\beta}}&#x3D;\frac{1}{1+\beta^2}(\frac{1}{P}+\frac{\beta^2}{R})<br>$$<br>对于多个二分类混淆矩阵，可以通过计算每个矩阵加起来得到宏查准率和宏查全率，以及计算平均值得到为查准率和微查全率</p>
-</li>
+<ol type="1">
+<li><p>BEP(平衡点):
+查准率等于查全率的情况下对应的值的大小，<strong>如果若一个学习器的BEP大，则可以说明性能优</strong></p></li>
+<li><p>F1：查准率和查全率的调和平均数： <span class="math display">\[
+\frac{1}{F_1}=\frac{1}{2}(\frac{1}{P}+\frac{1}{R})
+\]</span> 定义<span
+class="math inline">\(\beta\)</span>为查全率对查准率的相对重要程度，<span
+class="math inline">\(\beta=1\)</span>的时候为标准F1,<span
+class="math inline">\(\beta ＞ 1\)</span>查全率有更大影响： <span
+class="math display">\[
+\frac{1}{F_{\beta}}=\frac{1}{1+\beta^2}(\frac{1}{P}+\frac{\beta^2}{R})
+\]</span>
+对于多个二分类混淆矩阵，可以通过计算每个矩阵加起来得到宏查准率和宏查全率，以及计算平均值得到为查准率和微查全率</p></li>
 </ol>
-<h3 id="ROC与AUC"><a href="#ROC与AUC" class="headerlink" title="ROC与AUC"></a>ROC与AUC</h3><p>ROC曲线可以表示模型性能度量，而AUC则为ROC曲线下的面积值</p>
+<h3 id="roc与auc">ROC与AUC</h3>
+<p>ROC曲线可以表示模型性能度量，而AUC则为ROC曲线下的面积值</p>
 
       
     </div>
