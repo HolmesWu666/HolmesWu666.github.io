@@ -1,36 +1,272 @@
-extends includes/layout.pug
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>模型的评估与选择 | Wu Hou</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="模型的评估与选择 经验误差：训练集上出现的误差 泛化误差：测试集上出现的误差 过拟合：学习器过于强调样本规律，而使其泛化能力下降 欠拟合：学习器没能学好样本规律 测试集和训练集的划分 留出法：数据集划分为测试集和训练集两个，并使用分层抽样，即对应每个结果数据集划分比例相同 交叉验证法：将数据集用分层抽样思想划分为\(k\)个子集，每次抽取一个子集当测试集，其余子集当训练集，从而得到\">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模型的评估与选择">
+<meta property="og:url" content="http://example.com/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/index.html">
+<meta property="og:site_name" content="Wu Hou">
+<meta property="og:description" content="模型的评估与选择 经验误差：训练集上出现的误差 泛化误差：测试集上出现的误差 过拟合：学习器过于强调样本规律，而使其泛化能力下降 欠拟合：学习器没能学好样本规律 测试集和训练集的划分 留出法：数据集划分为测试集和训练集两个，并使用分层抽样，即对应每个结果数据集划分比例相同 交叉验证法：将数据集用分层抽样思想划分为\(k\)个子集，每次抽取一个子集当测试集，其余子集当训练集，从而得到\">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-02T15:17:18.000Z">
+<meta property="article:modified_time" content="2024-12-03T04:33:57.994Z">
+<meta property="article:author" content="Wu Hou">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Wu Hou" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
-    article#article-container.container.post-content
-      if theme.noticeOutdate.enable && page.noticeOutdate !== false 
-        include includes/post/outdate-notice.pug
-      else
-        !=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (page.tags.length > 0 && theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
-        
-    if theme.reward.enable && theme.reward.QR_code
-      !=partial('includes/post/reward', {}, {cache: true})
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
-
-    if theme.post_pagination
-      include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
-
-    if page.comments !== false && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache: true})
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Wu Hou</a>
+      </h1>
       
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-模型的评估与选择" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" class="article-date">
+  <time class="dt-published" datetime="2024-12-02T15:17:18.000Z" itemprop="datePublished">2024-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      模型的评估与选择
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="模型的评估与选择">模型的评估与选择</h1>
+<p>经验误差：训练集上出现的误差</p>
+<p>泛化误差：测试集上出现的误差</p>
+<p>过拟合：学习器过于强调样本规律，而使其泛化能力下降</p>
+<p>欠拟合：学习器没能学好样本规律</p>
+<h2 id="测试集和训练集的划分">测试集和训练集的划分</h2>
+<p>留出法：数据集划分为测试集和训练集两个，并使用分层抽样，<strong>即对应每个结果数据集划分比例相同</strong></p>
+<p>交叉验证法：将数据集用分层抽样思想划分为<span
+class="math inline">\(k\)</span>个子集，每次抽取一个子集当测试集，其余子集当训练集，从而得到<span
+class="math inline">\(k\)</span>组测试集和训练集，进行<span
+class="math inline">\(k\)</span>次训练，得到的结果取平均值，又称为<span
+class="math inline">\(k\)</span>折交叉验证</p>
+<p>自助法：数据集中抽样得到测试集，适用于样本量小的数据集，这一方法不会产生测试集和训练集存在无差异而导致的测试无效，理由如下式：
+<span class="math display">\[
+\lim_{m \to \infty}(1-\frac{1}{m})^m \to \frac{1}{e}=36.8\%
+\]</span>
+TIPS:完整的训练过程是先使用训练集+测试集训练模型，再使用总数据集使用模型，得到结果</p>
+<h2 id="模型评价">模型评价</h2>
+<p>错误率： <span class="math display">\[
+E(f;D)=\int_{x \sim D} \prod(f(x) \neq y)p(x)\rm d x
+\]</span> 精度： <span class="math display">\[
+acc(f;D)=1-E(f;D)=\int_{x \sim D} \prod(f(x) = y)p(x)\rm d x
+\]</span></p>
+<h3 id="查准率与查全率">查准率与查全率</h3>
+<p>查准率：<span
+class="math inline">\(P=\frac{TP}{TP+FP}\)</span>,查全率：<span
+class="math inline">\(R=\frac{TP}{TP+FN}\)</span></p>
+<p>定性判断：给定某一查全率，可以根据混淆矩阵计算对应的查准率，因而可以得到PR曲线，<strong>若一个学习器的PR曲线被另一个学习器的PR曲线包住，则可以说明后者的性能优于前者</strong></p>
+<p>定量判断：</p>
+<ol type="1">
+<li><p>BEP(平衡点):
+查准率等于查全率的情况下对应的值的大小，<strong>如果若一个学习器的BEP大，则可以说明性能优</strong></p></li>
+<li><p>F1：查准率和查全率的调和平均数： <span class="math display">\[
+\frac{1}{F_1}=\frac{1}{2}(\frac{1}{P}+\frac{1}{R})
+\]</span> 定义<span
+class="math inline">\(\beta\)</span>为查全率对查准率的相对重要程度，<span
+class="math inline">\(\beta=1\)</span>的时候为标准F1,<span
+class="math inline">\(\beta ＞ 1\)</span>查全率有更大影响： <span
+class="math display">\[
+\frac{1}{F_{\beta}}=\frac{1}{1+\beta^2}(\frac{1}{P}+\frac{\beta^2}{R})
+\]</span>
+对于多个二分类混淆矩阵，可以通过计算每个矩阵加起来得到宏查准率和宏查全率，以及计算平均值得到为查准率和微查全率</p></li>
+</ol>
+<h3 id="roc与auc">ROC与AUC</h3>
+<p>ROC曲线可以表示模型性能度量，而AUC则为ROC曲线下的面积值</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" data-id="cm47zeo060002ostlg7wi7f91" data-title="模型的评估与选择" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用GATK进行SNPs和indels的挖掘</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/">模型的评估与选择</a>
+          </li>
+        
+          <li>
+            <a href="/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/">使用GATK进行SNPs和indels的挖掘</a>
+          </li>
+        
+          <li>
+            <a href="/2024/12/02/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Wu Hou<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

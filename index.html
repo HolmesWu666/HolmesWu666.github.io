@@ -1,5 +1,432 @@
-extends includes/layout.pug
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Wu Hou</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Wu Hou">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Wu Hou">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Wu Hou">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Wu Hou" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-block content
-  include ./includes/mixins/indexPostUI.pug
-  +indexPostUI
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Wu Hou</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-模型的评估与选择" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" class="article-date">
+  <time class="dt-published" datetime="2024-12-02T15:17:18.000Z" itemprop="datePublished">2024-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/">模型的评估与选择</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="模型的评估与选择">模型的评估与选择</h1>
+<p>经验误差：训练集上出现的误差</p>
+<p>泛化误差：测试集上出现的误差</p>
+<p>过拟合：学习器过于强调样本规律，而使其泛化能力下降</p>
+<p>欠拟合：学习器没能学好样本规律</p>
+<h2 id="测试集和训练集的划分">测试集和训练集的划分</h2>
+<p>留出法：数据集划分为测试集和训练集两个，并使用分层抽样，<strong>即对应每个结果数据集划分比例相同</strong></p>
+<p>交叉验证法：将数据集用分层抽样思想划分为<span
+class="math inline">\(k\)</span>个子集，每次抽取一个子集当测试集，其余子集当训练集，从而得到<span
+class="math inline">\(k\)</span>组测试集和训练集，进行<span
+class="math inline">\(k\)</span>次训练，得到的结果取平均值，又称为<span
+class="math inline">\(k\)</span>折交叉验证</p>
+<p>自助法：数据集中抽样得到测试集，适用于样本量小的数据集，这一方法不会产生测试集和训练集存在无差异而导致的测试无效，理由如下式：
+<span class="math display">\[
+\lim_{m \to \infty}(1-\frac{1}{m})^m \to \frac{1}{e}=36.8\%
+\]</span>
+TIPS:完整的训练过程是先使用训练集+测试集训练模型，再使用总数据集使用模型，得到结果</p>
+<h2 id="模型评价">模型评价</h2>
+<p>错误率： <span class="math display">\[
+E(f;D)=\int_{x \sim D} \prod(f(x) \neq y)p(x)\rm d x
+\]</span> 精度： <span class="math display">\[
+acc(f;D)=1-E(f;D)=\int_{x \sim D} \prod(f(x) = y)p(x)\rm d x
+\]</span></p>
+<h3 id="查准率与查全率">查准率与查全率</h3>
+<p>查准率：<span
+class="math inline">\(P=\frac{TP}{TP+FP}\)</span>,查全率：<span
+class="math inline">\(R=\frac{TP}{TP+FN}\)</span></p>
+<p>定性判断：给定某一查全率，可以根据混淆矩阵计算对应的查准率，因而可以得到PR曲线，<strong>若一个学习器的PR曲线被另一个学习器的PR曲线包住，则可以说明后者的性能优于前者</strong></p>
+<p>定量判断：</p>
+<ol type="1">
+<li><p>BEP(平衡点):
+查准率等于查全率的情况下对应的值的大小，<strong>如果若一个学习器的BEP大，则可以说明性能优</strong></p></li>
+<li><p>F1：查准率和查全率的调和平均数： <span class="math display">\[
+\frac{1}{F_1}=\frac{1}{2}(\frac{1}{P}+\frac{1}{R})
+\]</span> 定义<span
+class="math inline">\(\beta\)</span>为查全率对查准率的相对重要程度，<span
+class="math inline">\(\beta=1\)</span>的时候为标准F1,<span
+class="math inline">\(\beta ＞ 1\)</span>查全率有更大影响： <span
+class="math display">\[
+\frac{1}{F_{\beta}}=\frac{1}{1+\beta^2}(\frac{1}{P}+\frac{\beta^2}{R})
+\]</span>
+对于多个二分类混淆矩阵，可以通过计算每个矩阵加起来得到宏查准率和宏查全率，以及计算平均值得到为查准率和微查全率</p></li>
+</ol>
+<h3 id="roc与auc">ROC与AUC</h3>
+<p>ROC曲线可以表示模型性能度量，而AUC则为ROC曲线下的面积值</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" data-id="cm47zeo060002ostlg7wi7f91" data-title="模型的评估与选择" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-使用GATK进行SNPs和indels的挖掘" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/" class="article-date">
+  <time class="dt-published" datetime="2024-12-02T15:10:16.000Z" itemprop="datePublished">2024-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/">使用GATK进行SNPs和indels的挖掘</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="实验记录-使用gatk4进行snps和indels的挖掘">实验记录
+使用GATK4进行SNPs和indels的挖掘</h1>
+<p>本实验的raw data
+是编号为<strong>SSR6023853-SSR6023865,SSR6023882-SSR6023885的fastq格式</strong>数据，测序长度为PE150,参考基因组为<strong>my.ref.fa</strong>,测序的方式是RNA-Seq。</p>
+<p>通过前面的过滤raw
+data和比对操作，我们可以得每一组测序数据与reference比对生成的sam文件，将所有的sam文件转为bam文件之后，首先是对每一个文件进行sort，之后执行merge操作（merge之后的bam也是排序好的，理论上是不需要sort的，但我这里又sort了一遍），此时我们可以得到数量为1的bam文件，它是一个包含了我们所有测序数据的比对结果的二进制文件，之后进行GATK的相关操作来进行变异的挖掘。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">samtools sort -@ 10 merged.bam -o merged_sort.bam</span><br></pre></td></tr></table></figure>
+<h2 id="工具的下载">工具的下载</h2>
+<p>picard:下载最新版本的<a
+target="_blank" rel="noopener" href="http://broadinstitute.github.io/picard/">Picard Tools - By Broad
+Institute</a></p>
+<p>gatk4:下载最新版本的<a
+target="_blank" rel="noopener" href="https://github.com/broadinstitute/gatk/releases">Releases ·
+broadinstitute/gatk (github.com)</a></p>
+<p>java(最新版的)：在官网下载最新版本就行，注意一定要下x64版本的，实验室服务器的CPU是intel的不是ARM架构的</p>
+<h2 id="数据的清理">数据的清理</h2>
+<h3 id="标记pcr重复">标记PCR重复</h3>
+<p>最新版本的GATK将picard已经纳入其中了，所以我们直接使用GATK命令就可以了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">raw_bam = ./merged.bam</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">java =  <span class="comment">#这里设置环境变量之后可以不填</span></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">gatk = <span class="comment">#这里设置环境变量之后可以不填</span></span></span><br><span class="line">nohup $java $gatk MarkDuplicates -I $raw_bam -O ./merged_markdup.bam -M metrics.txt   --MAX_FILE_HANDLES_FOR_READ_ENDS_MAP 1000 &gt; gatk_mkdup.log 2&gt;&amp;1 &amp; #这一步时间会很长</span><br></pre></td></tr></table></figure>
+<p>运行会生成<code>merged_bam_markdup.bam</code>和<code>metrics.txt</code></p>
+<p>-M metrics.txt设置输出报告，其中包含有关重复标记过程的统计信息。</p>
+<p>标记完成之后就可以构建索引文件了：</p>
+<p>使用GATK
+callSNPs需要的索引文件有三个：<strong>reference的.fai、reference的.dict、merged_bam_markdup.bam文件的.bai文件</strong>。</p>
+<h4 id="对bam构建idx">对bam构建idx</h4>
+<p>这一步要在去重之后进行，否则会增加算力负担（最好在全部处理完成得到最终bam之后进行）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">samtools index merged_markdup.bam</span><br></pre></td></tr></table></figure>
+<h4 id="对reference构建idx">对reference构建idx</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">ref=./my.ref.fa</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">java <span class="variable">$gatk</span> CreateSequenceDictionary -R <span class="variable">$ref</span> -O my.ref.dict</span></span><br><span class="line">samtools faidx $ref</span><br></pre></td></tr></table></figure>
+<h3 id="对indel附近进行重新比对">对indel附近进行重新比对</h3>
+<p>realignment操作</p>
+<p>要使用GATK对indel周围进行重新比对，你可以使用GATK工具中的<code>IndelRealigner</code>。这个工具可以根据已知的indel信息重新对reads进行比对，以改善indel区域的比对质量。</p>
+<p>创建一个目标坐标数据文件（<code>target intervals</code>）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk RealignerTargetCreator -R $ref -I merged_markdup.bam -o target.intervals</span><br></pre></td></tr></table></figure>
+<p>这个命令会分析去重的BAM文件（<code>merged_bam_markdup.bam</code>），识别其中的indel位置，并生成一个目标坐标数据文件（<code>target intervals</code>）。</p>
+<p>对reads进行重新比对：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk IndelRealigner -R $ref -I merged_markdup.bam -targetIntervals target.intervals -o merged_markdup_realigned.bam</span><br></pre></td></tr></table></figure>
+<p>这个命令会根据目标坐标数据文件（<code>target intervals</code>）对reads进行重新比对，并输出一个重新比对后的BAM文件（<code>merged_markdup_realigned.bam</code>）。</p>
+<p>可选：如果你想生成一个基于实际比对观察到的indel的索引文件，以用于以后的分析步骤，你可以执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk BamIndexGenerator -I realigned.bam</span><br></pre></td></tr></table></figure>
+<p>这个命令会生成一个索引文件，它可以为实际比对观察到的indel提供快速检索。</p>
+<p>请注意，上述命令中的参数和文件名可能需要根据你的具体情况进行调整。尤其是<code>-R</code>参数要指定正确的参考基因组文件，<code>-I</code>参数要指定正确的输入BAM文件，以及<code>-o</code>参数要指定输出文件的名称。</p>
+<h3
+id="碱基质量矫正base-quality-score-recalibration-bqsr">碱基质量矫正Base
+quality score recalibration (BQSR)</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk BaseRecalibrator -I merged_markdup_realigned.bam -R $ref --known-sites dbSNP.vcf.gz -O recal_data.table</span><br></pre></td></tr></table></figure>
+<p><code>dbSNP.vcf</code>是http://www.ncbi.nlm.nih.gov/SNP/NCBI的公开数据，我们做的植物如果没有的话可以不设置这个参数，不会影响最终结果。</p>
+<p>生成的<code>recal_data.table</code>其中记录了参考基因组与样本数据之间的差异，以及需要校正的碱基质量信息。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">将BQSR结果进行应用，生成最终的bam文件</span></span><br><span class="line">gatk ApplyBQSR -R $ref -I merged_bam_markdup.bam --bqsr-recal-file recal_data.table -O merged_markdup_realigned_recal.bam</span><br></pre></td></tr></table></figure>
+<p>最终过滤完成的文件为<code>merged_markdup_realigned_recal.bam</code></p>
+<h2 id="使用gatk进行variant-calling">使用GATK进行Variant Calling</h2>
+<p>最新的GATK版本给出的算法为<code>HaplotypeCaller</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk HaplotypeCaller -R $ref -I merged_markdup_realigned_recal.bam --dbsnp dbSNP.vcf.gz -O raw_variants.vcf</span><br></pre></td></tr></table></figure>
+<p>最后得到<code>raw_variants.vcf</code>,
+<code>--dbsnp dbSNP.vcf.gz</code>这一项没有公共数据也可以不写。</p>
+<h2 id="进行vcf文件的过滤">进行VCF文件的过滤</h2>
+<p>在使用GATK进行变异位点调用后，通常需要对原始的VCF文件进行进一步过滤，以过滤掉可能的假阳性（false
+positive）变异。</p>
+<p>下面是使用GATK提供的工具VariantFiltration来对VCF文件进行过滤的一般步骤：</p>
+<ol type="1">
+<li><p>创建一个过滤条件（Filter
+Expression）：根据你的需求，创建一个过滤条件来过滤掉低质量的变异位点。例如，你可以将一些常见的过滤条件包括：QUAL
+&lt; 30.0 (质量值低于30)，DP &lt; 10 (reads深度低于10)，FS &gt; 60.0
+(Fisher
+Strand值大于60)等等。你可以根据具体的需求和实验数据来自定义这些过滤条件。</p></li>
+<li><p>使用<code>VariantFiltration</code>进行过滤：运行<code>VariantFiltration</code>工具，并应用上述定义的过滤条件来过滤VCF文件。</p></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk VariantFiltration -R $ref -V raw_variants.vcf --filter-expression &quot;过滤条件&quot; --filter-name &quot;过滤名称&quot; -O filtered_variants.vcf</span><br></pre></td></tr></table></figure>
+<p>其中，<code>$ref</code>是参考基因组的FASTA文件路径，<code>raw_variants.vcf</code>是HaplotypeCaller生成的原始VCF文件，<code>过滤条件</code>是你定义的过滤条件，<code>过滤名称</code>是为过滤条件定义的名称，<code>filtered_variants.vcf</code>是输出的过滤后的VCF文件。</p>
+<ol start="3" type="1">
+<li>可选：可以根据你的需要添加或修改过滤条件，并多次运行VariantFiltration命令来进一步优化过滤参数和过滤结果。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/" data-id="cm47zeo040001ostl75ygansd" data-title="使用GATK进行SNPs和indels的挖掘" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/12/02/hello-world/" class="article-date">
+  <time class="dt-published" datetime="2024-12-02T05:38:49.381Z" itemprop="datePublished">2024-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/12/02/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very
+first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for
+more info. If you get any problems when using Hexo, you can find the
+answer in <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
+you can ask me on <a
+target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/12/02/hello-world/" data-id="cm47zeo020000ostl9qsc35pf" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/">模型的评估与选择</a>
+          </li>
+        
+          <li>
+            <a href="/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/">使用GATK进行SNPs和indels的挖掘</a>
+          </li>
+        
+          <li>
+            <a href="/2024/12/02/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Wu Hou<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
