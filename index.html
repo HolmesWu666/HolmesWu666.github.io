@@ -140,7 +140,7 @@ class="math display">\[
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" data-id="cm476cns00000r0tl1chic6xc" data-title="模型的评估与选择" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2024/12/02/%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" data-id="cm47z501k0002jstlemuchzt0" data-title="模型的评估与选择" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -176,70 +176,83 @@ class="math display">\[
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="实验记录-使用GATK4进行SNPs和indels的挖掘"><a href="#实验记录-使用GATK4进行SNPs和indels的挖掘" class="headerlink" title="实验记录 使用GATK4进行SNPs和indels的挖掘"></a>实验记录 使用GATK4进行SNPs和indels的挖掘</h1><p>本实验的raw data 是编号为<strong>SSR6023853-SSR6023865,SSR6023882-SSR6023885的fastq格式</strong>数据，测序长度为PE150,参考基因组为<strong>my.ref.fa</strong>,测序的方式是RNA-Seq。</p>
-<p>通过前面的过滤raw data和比对操作，我们可以得每一组测序数据与reference比对生成的sam文件，将所有的sam文件转为bam文件之后，首先是对每一个文件进行sort，之后执行merge操作（merge之后的bam也是排序好的，理论上是不需要sort的，但我这里又sort了一遍），此时我们可以得到数量为1的bam文件，它是一个包含了我们所有测序数据的比对结果的二进制文件，之后进行GATK的相关操作来进行变异的挖掘。</p>
+        <h1 id="实验记录-使用gatk4进行snps和indels的挖掘">实验记录
+使用GATK4进行SNPs和indels的挖掘</h1>
+<p>本实验的raw data
+是编号为<strong>SSR6023853-SSR6023865,SSR6023882-SSR6023885的fastq格式</strong>数据，测序长度为PE150,参考基因组为<strong>my.ref.fa</strong>,测序的方式是RNA-Seq。</p>
+<p>通过前面的过滤raw
+data和比对操作，我们可以得每一组测序数据与reference比对生成的sam文件，将所有的sam文件转为bam文件之后，首先是对每一个文件进行sort，之后执行merge操作（merge之后的bam也是排序好的，理论上是不需要sort的，但我这里又sort了一遍），此时我们可以得到数量为1的bam文件，它是一个包含了我们所有测序数据的比对结果的二进制文件，之后进行GATK的相关操作来进行变异的挖掘。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">samtools sort -@ 10 merged.bam -o merged_sort.bam</span><br></pre></td></tr></table></figure>
-
-<h2 id="工具的下载"><a href="#工具的下载" class="headerlink" title="工具的下载"></a>工具的下载</h2><p>picard:下载最新版本的<a target="_blank" rel="noopener" href="http://broadinstitute.github.io/picard/">Picard Tools - By Broad Institute</a></p>
-<p>gatk4:下载最新版本的<a target="_blank" rel="noopener" href="https://github.com/broadinstitute/gatk/releases">Releases · broadinstitute&#x2F;gatk (github.com)</a></p>
+<h2 id="工具的下载">工具的下载</h2>
+<p>picard:下载最新版本的<a
+target="_blank" rel="noopener" href="http://broadinstitute.github.io/picard/">Picard Tools - By Broad
+Institute</a></p>
+<p>gatk4:下载最新版本的<a
+target="_blank" rel="noopener" href="https://github.com/broadinstitute/gatk/releases">Releases ·
+broadinstitute/gatk (github.com)</a></p>
 <p>java(最新版的)：在官网下载最新版本就行，注意一定要下x64版本的，实验室服务器的CPU是intel的不是ARM架构的</p>
-<h2 id="数据的清理"><a href="#数据的清理" class="headerlink" title="数据的清理"></a>数据的清理</h2><h3 id="标记PCR重复"><a href="#标记PCR重复" class="headerlink" title="标记PCR重复"></a>标记PCR重复</h3><p>最新版本的GATK将picard已经纳入其中了，所以我们直接使用GATK命令就可以了</p>
+<h2 id="数据的清理">数据的清理</h2>
+<h3 id="标记pcr重复">标记PCR重复</h3>
+<p>最新版本的GATK将picard已经纳入其中了，所以我们直接使用GATK命令就可以了</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">raw_bam = ./merged.bam</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">java =  <span class="comment">#这里设置环境变量之后可以不填</span></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">gatk = <span class="comment">#这里设置环境变量之后可以不填</span></span></span><br><span class="line">nohup $java $gatk MarkDuplicates -I $raw_bam -O ./merged_markdup.bam -M metrics.txt   --MAX_FILE_HANDLES_FOR_READ_ENDS_MAP 1000 &gt; gatk_mkdup.log 2&gt;&amp;1 &amp; #这一步时间会很长</span><br></pre></td></tr></table></figure>
-
-<p>运行会生成<code>merged_bam_markdup.bam</code>和<code>metrics.txt </code></p>
+<p>运行会生成<code>merged_bam_markdup.bam</code>和<code>metrics.txt</code></p>
 <p>-M metrics.txt设置输出报告，其中包含有关重复标记过程的统计信息。</p>
 <p>标记完成之后就可以构建索引文件了：</p>
-<p>使用GATK callSNPs需要的索引文件有三个：<strong>reference的.fai、reference的.dict、merged_bam_markdup.bam文件的.bai文件</strong>。</p>
-<h4 id="对bam构建idx"><a href="#对bam构建idx" class="headerlink" title="对bam构建idx"></a>对bam构建idx</h4><p>这一步要在去重之后进行，否则会增加算力负担（最好在全部处理完成得到最终bam之后进行）</p>
+<p>使用GATK
+callSNPs需要的索引文件有三个：<strong>reference的.fai、reference的.dict、merged_bam_markdup.bam文件的.bai文件</strong>。</p>
+<h4 id="对bam构建idx">对bam构建idx</h4>
+<p>这一步要在去重之后进行，否则会增加算力负担（最好在全部处理完成得到最终bam之后进行）</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">samtools index merged_markdup.bam</span><br></pre></td></tr></table></figure>
-
-<h4 id="对reference构建idx"><a href="#对reference构建idx" class="headerlink" title="对reference构建idx"></a>对reference构建idx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">ref=./my.ref.fa</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">java <span class="variable">$gatk</span> CreateSequenceDictionary -R <span class="variable">$ref</span> -O my.ref.dict</span></span><br><span class="line">samtools faidx $ref</span><br></pre></td></tr></table></figure>
-
-<h3 id="对indel附近进行重新比对"><a href="#对indel附近进行重新比对" class="headerlink" title="对indel附近进行重新比对"></a>对indel附近进行重新比对</h3><p>realignment操作</p>
+<h4 id="对reference构建idx">对reference构建idx</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">ref=./my.ref.fa</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">java <span class="variable">$gatk</span> CreateSequenceDictionary -R <span class="variable">$ref</span> -O my.ref.dict</span></span><br><span class="line">samtools faidx $ref</span><br></pre></td></tr></table></figure>
+<h3 id="对indel附近进行重新比对">对indel附近进行重新比对</h3>
+<p>realignment操作</p>
 <p>要使用GATK对indel周围进行重新比对，你可以使用GATK工具中的<code>IndelRealigner</code>。这个工具可以根据已知的indel信息重新对reads进行比对，以改善indel区域的比对质量。</p>
 <p>创建一个目标坐标数据文件（<code>target intervals</code>）：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk RealignerTargetCreator -R $ref -I merged_markdup.bam -o target.intervals</span><br></pre></td></tr></table></figure>
-
 <p>这个命令会分析去重的BAM文件（<code>merged_bam_markdup.bam</code>），识别其中的indel位置，并生成一个目标坐标数据文件（<code>target intervals</code>）。</p>
 <p>对reads进行重新比对：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk IndelRealigner -R $ref -I merged_markdup.bam -targetIntervals target.intervals -o merged_markdup_realigned.bam</span><br></pre></td></tr></table></figure>
-
 <p>这个命令会根据目标坐标数据文件（<code>target intervals</code>）对reads进行重新比对，并输出一个重新比对后的BAM文件（<code>merged_markdup_realigned.bam</code>）。</p>
 <p>可选：如果你想生成一个基于实际比对观察到的indel的索引文件，以用于以后的分析步骤，你可以执行以下命令：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk BamIndexGenerator -I realigned.bam</span><br></pre></td></tr></table></figure>
-
 <p>这个命令会生成一个索引文件，它可以为实际比对观察到的indel提供快速检索。</p>
 <p>请注意，上述命令中的参数和文件名可能需要根据你的具体情况进行调整。尤其是<code>-R</code>参数要指定正确的参考基因组文件，<code>-I</code>参数要指定正确的输入BAM文件，以及<code>-o</code>参数要指定输出文件的名称。</p>
-<h3 id="碱基质量矫正Base-quality-score-recalibration-BQSR"><a href="#碱基质量矫正Base-quality-score-recalibration-BQSR" class="headerlink" title="碱基质量矫正Base quality score recalibration (BQSR)"></a>碱基质量矫正Base quality score recalibration (BQSR)</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk BaseRecalibrator -I merged_markdup_realigned.bam -R $ref --known-sites dbSNP.vcf.gz -O recal_data.table</span><br></pre></td></tr></table></figure>
-
-<p><code>dbSNP.vcf</code>是<a target="_blank" rel="noopener" href="http://www.ncbi.nlm.nih.gov/SNP/NCBI%E7%9A%84%E5%85%AC%E5%BC%80%E6%95%B0%E6%8D%AE%EF%BC%8C%E6%88%91%E4%BB%AC%E5%81%9A%E7%9A%84%E6%A4%8D%E7%89%A9%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89%E7%9A%84%E8%AF%9D%E5%8F%AF%E4%BB%A5%E4%B8%8D%E8%AE%BE%E7%BD%AE%E8%BF%99%E4%B8%AA%E5%8F%82%E6%95%B0%EF%BC%8C%E4%B8%8D%E4%BC%9A%E5%BD%B1%E5%93%8D%E6%9C%80%E7%BB%88%E7%BB%93%E6%9E%9C%E3%80%82">http://www.ncbi.nlm.nih.gov/SNP/NCBI的公开数据，我们做的植物如果没有的话可以不设置这个参数，不会影响最终结果。</a></p>
+<h3
+id="碱基质量矫正base-quality-score-recalibration-bqsr">碱基质量矫正Base
+quality score recalibration (BQSR)</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk BaseRecalibrator -I merged_markdup_realigned.bam -R $ref --known-sites dbSNP.vcf.gz -O recal_data.table</span><br></pre></td></tr></table></figure>
+<p><code>dbSNP.vcf</code>是http://www.ncbi.nlm.nih.gov/SNP/NCBI的公开数据，我们做的植物如果没有的话可以不设置这个参数，不会影响最终结果。</p>
 <p>生成的<code>recal_data.table</code>其中记录了参考基因组与样本数据之间的差异，以及需要校正的碱基质量信息。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">将BQSR结果进行应用，生成最终的bam文件</span></span><br><span class="line">gatk ApplyBQSR -R $ref -I merged_bam_markdup.bam --bqsr-recal-file recal_data.table -O merged_markdup_realigned_recal.bam</span><br></pre></td></tr></table></figure>
-
 <p>最终过滤完成的文件为<code>merged_markdup_realigned_recal.bam</code></p>
-<h2 id="使用GATK进行Variant-Calling"><a href="#使用GATK进行Variant-Calling" class="headerlink" title="使用GATK进行Variant Calling"></a>使用GATK进行Variant Calling</h2><p>最新的GATK版本给出的算法为<code>HaplotypeCaller</code>:</p>
+<h2 id="使用gatk进行variant-calling">使用GATK进行Variant Calling</h2>
+<p>最新的GATK版本给出的算法为<code>HaplotypeCaller</code>:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk HaplotypeCaller -R $ref -I merged_markdup_realigned_recal.bam --dbsnp dbSNP.vcf.gz -O raw_variants.vcf</span><br></pre></td></tr></table></figure>
-
-<p>最后得到<code>raw_variants.vcf</code>, <code>--dbsnp dbSNP.vcf.gz</code>这一项没有公共数据也可以不写。</p>
-<h2 id="进行VCF文件的过滤"><a href="#进行VCF文件的过滤" class="headerlink" title="进行VCF文件的过滤"></a>进行VCF文件的过滤</h2><p>在使用GATK进行变异位点调用后，通常需要对原始的VCF文件进行进一步过滤，以过滤掉可能的假阳性（false positive）变异。</p>
+<p>最后得到<code>raw_variants.vcf</code>,
+<code>--dbsnp dbSNP.vcf.gz</code>这一项没有公共数据也可以不写。</p>
+<h2 id="进行vcf文件的过滤">进行VCF文件的过滤</h2>
+<p>在使用GATK进行变异位点调用后，通常需要对原始的VCF文件进行进一步过滤，以过滤掉可能的假阳性（false
+positive）变异。</p>
 <p>下面是使用GATK提供的工具VariantFiltration来对VCF文件进行过滤的一般步骤：</p>
-<ol>
-<li><p>创建一个过滤条件（Filter Expression）：根据你的需求，创建一个过滤条件来过滤掉低质量的变异位点。例如，你可以将一些常见的过滤条件包括：QUAL &lt; 30.0 (质量值低于30)，DP &lt; 10 (reads深度低于10)，FS &gt; 60.0 (Fisher Strand值大于60)等等。你可以根据具体的需求和实验数据来自定义这些过滤条件。</p>
-</li>
-<li><p>使用<code>VariantFiltration</code>进行过滤：运行<code>VariantFiltration</code>工具，并应用上述定义的过滤条件来过滤VCF文件。</p>
-</li>
+<ol type="1">
+<li><p>创建一个过滤条件（Filter
+Expression）：根据你的需求，创建一个过滤条件来过滤掉低质量的变异位点。例如，你可以将一些常见的过滤条件包括：QUAL
+&lt; 30.0 (质量值低于30)，DP &lt; 10 (reads深度低于10)，FS &gt; 60.0
+(Fisher
+Strand值大于60)等等。你可以根据具体的需求和实验数据来自定义这些过滤条件。</p></li>
+<li><p>使用<code>VariantFiltration</code>进行过滤：运行<code>VariantFiltration</code>工具，并应用上述定义的过滤条件来过滤VCF文件。</p></li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gatk VariantFiltration -R $ref -V raw_variants.vcf --filter-expression &quot;过滤条件&quot; --filter-name &quot;过滤名称&quot; -O filtered_variants.vcf</span><br></pre></td></tr></table></figure>
-
 <p>其中，<code>$ref</code>是参考基因组的FASTA文件路径，<code>raw_variants.vcf</code>是HaplotypeCaller生成的原始VCF文件，<code>过滤条件</code>是你定义的过滤条件，<code>过滤名称</code>是为过滤条件定义的名称，<code>filtered_variants.vcf</code>是输出的过滤后的VCF文件。</p>
-<ol start="3">
+<ol start="3" type="1">
 <li>可选：可以根据你的需要添加或修改过滤条件，并多次运行VariantFiltration命令来进一步优化过滤参数和过滤结果。</li>
 </ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/" data-id="cm4764eqq00007ctlanf8cqvl" data-title="使用GATK进行SNPs和indels的挖掘" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2024/12/02/%E4%BD%BF%E7%94%A8GATK%E8%BF%9B%E8%A1%8CSNPs%E5%92%8Cindels%E7%9A%84%E6%8C%96%E6%8E%98/" data-id="cm47z501j0001jstl371p3szg" data-title="使用GATK进行SNPs和indels的挖掘" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -273,24 +286,34 @@ class="math display">\[
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
+        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very
+first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for
+more info. If you get any problems when using Hexo, you can find the
+answer in <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
+you can ask me on <a
+target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a
+target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2024/12/02/hello-world/" data-id="cm46lqvzs0000jktl4u4ebqt1" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2024/12/02/hello-world/" data-id="cm47z501f0000jstlc6ra9m5u" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
